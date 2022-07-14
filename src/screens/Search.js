@@ -51,14 +51,16 @@ const styles = EStyleSheet.create({
     fontSize: '2.5rem',
     borderWidth: 1,
     borderColor: '#EBEBEB',
-    textAlign: I18nManager.isRTL ? 'right' : 'left',
+      textAlign: I18nManager.isRTL ? 'right' : 'left',
+ 
   },
   inputAndroid: {
     height: 44,
     paddingLeft: 10,
     paddingRight: 10,
     flex: 2,
-    textAlign: I18nManager.isRTL ? 'right' : 'left',
+      textAlign: I18nManager.isRTL ? 'right' : 'left',
+        color: '#FFF',
   },
   content: {
     flex: 1,

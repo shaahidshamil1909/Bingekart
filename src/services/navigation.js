@@ -64,6 +64,7 @@ export function setRoot() {
         color: theme.$navBarButtonColor,
         showTitle: false,
         },
+
        // leftButtons: [
         //    {
                 //id: 'clearWishList',
@@ -124,7 +125,7 @@ export function setRoot() {
           bottomTab: {
             icon: iconsMap.home,
             text: i18n.t('Home'),
-          },
+            },
         },
       },
     },

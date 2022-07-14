@@ -1,18 +1,14 @@
 {
   "ExpandedNodes": [
     "",
-    "\\android",
-    "\\android\\app",
-    "\\android\\app\\src",
-    "\\android\\app\\src\\main",
-    "\\android\\app\\src\\main\\java",
-    "\\android\\app\\src\\main\\java\\com",
-    "\\android\\app\\src\\main\\java\\com\\cscart",
-    "\\android\\app\\src\\main\\java\\com\\cscart\\bingekart",
     "\\src",
-    "\\src\\actions",
-    "\\src\\screens"
+    "\\src\\components",
+    "\\src\\components\\form",
+    "\\src\\config",
+    "\\src\\screens",
+    "\\src\\screens\\drawers",
+    "\\src\\services"
   ],
-  "SelectedNode": "\\src\\actions\\appActions.js",
+  "SelectedNode": "\\src\\screens\\ProductDetail.js",
   "PreviewInSolutionExplorer": false
 }

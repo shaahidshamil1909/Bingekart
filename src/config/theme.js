@@ -88,5 +88,5 @@ export default {
   $discussionMessageColor: '#808080',
 
   // Store logo size 760x240.
-    $logoUrl: 'http://bingekart.com/cscart/images/logos/9/bingekartupdatedlogo.png',
+    $logoUrl: 'https://bingekart.com/images/logos/9/Final_Logo_bingekart-02__1_.png',
 };

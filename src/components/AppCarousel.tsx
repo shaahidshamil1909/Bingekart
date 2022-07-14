@@ -15,6 +15,8 @@ const styles = (carouselContainerHeight: number | null) =>
       borderRadius: 5,
       marginHorizontal: 8,
       backgroundColor: '$dotsSwiperColor',
+      
+     
     },
   });
 

@@ -1,507 +1,215 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  SafeAreaView,
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Image,
+    StatusBar,
 } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { CreditCardInput } from "react-native-credit-card-input";
+import { Secret_key, STRIPE_PUBLISHABLE_KEY } from './keys';
 
-// Import actions.
-import * as ordersActions from '../actions/ordersActions';
-import * as cartActions from '../actions/cartActions';
-import * as paymentsActions from '../actions/paymentsActions';
+// create a component
+const CURRENCY = 'USD';
+var CARD_TOKEN = null;
 
-// Components
-import StepByStepSwitcher from '../components/StepByStepSwitcher';
-import CartFooter from '../components/CartFooter';
-import FormBlock from '../components/FormBlock';
-import PaymentPhoneForm from '../components/PaymentPhoneForm';
-import PaymentCreditCardForm from '../components/PaymentCreditCardForm';
-import PaymentEmpty from '../components/PaymentEmpty';
-import PaymentCheckForm from '../components/PaymentCheckForm';
-import PaymentPaypalForm from '../components/PaymentPaypalForm';
-import PaymentYandexKassaForm from '../components/PaymentYandexKassaForm';
-import Spinner from '../components/Spinner';
-import Icon from '../components/Icon';
-import { stripTags, formatPrice } from '../utils';
-import i18n from '../utils/i18n';
-import * as nav from '../services/navigation';
 
-const styles = EStyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-  paymentItemWrapper: {
-    paddingLeft: 14,
-    paddingRight: 14,
-    marginTop: 10,
-  },
-  paymentItem: {
-    paddingLeft: 14,
-    paddingRight: 14,
-    paddingTop: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: '#F1F1F1',
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-  },
-  paymentItemText: {
-    fontSize: '0.9rem',
-  },
-  paymentItemDesc: {
-    fontSize: '0.8rem',
-    paddingBottom: 6,
-    color: 'gray',
-    marginTop: 10,
-  },
-  uncheckIcon: {
-    fontSize: '1rem',
-    marginRight: 6,
-  },
-  checkIcon: {
-    fontSize: '1rem',
-    marginRight: 6,
-  },
-  stepsWrapper: {
-    padding: 14,
-  },
+function getCreditCardToken(creditCardData) {
+    // alert()
+    const card = {
+        'card[number]': creditCardData.values.number.replace(/ /g, ''),
+        'card[exp_month]': creditCardData.values.expiry.split('/')[0],
+        'card[exp_year]': creditCardData.values.expiry.split('/')[1],
+        'card[cvc]': creditCardData.values.cvc
+    };
+    return fetch('https://api.stripe.com/v1/tokens', {
+        headers: {
+            // Use the correct MIME type for your server
+            Accept: 'application/json',
+            // Use the correct Content Type to send data to Stripe
+            'Content-Type': 'application/x-www-form-urlencoded',
+            // Use the Stripe publishable key as Bearer
+            Authorization: `Bearer ${STRIPE_PUBLISHABLE_KEY}`
+        },
+        // Use a proper HTTP method
+        method: 'post',
+        // Format the credit card data to a string of key-value pairs
+        // divided by &
+        body: Object.keys(card)
+            .map(key => key + '=' + card[key])
+            .join('&')
+    }).
+        then(response => response.json())
+        .catch((error) => console.log(error))
+};
+/**
+ * The method imitates a request to our server.
+ *
+ * @param creditCardToken
+ * @return {Promise<Response>}
+ */
+function subscribeUser(creditCardToken) {
+    return new Promise((resolve) => {
+        console.log('Credit card token\n', creditCardToken);
+        CARD_TOKEN = creditCardToken.id;
+        setTimeout(() => {
+            resolve({ status: true });
+        }, 1000);
+    });
+};
+
+const StripeGateway = () => {
+
+
+    const [CardInput, setCardInput] = React.useState({})
+
+    const onSubmit = async () => {
+
+        if (CardInput.valid == false || typeof CardInput.valid == "undefined") {
+            alert('Invalid Credit Card');
+            return false;
+        }
+
+        let creditCardToken;
+        try {
+            // Create a credit card token
+            creditCardToken = await getCreditCardToken(CardInput);
+            // console.log("creditCardToken", creditCardToken)
+            if (creditCardToken.error) {
+                alert("creditCardToken error");
+                return;
+            }
+        } catch (e) {
+            console.log("e", e);
+            return;
+        }
+        // Send a request to your server with the received credit card token
+        const { error } = await subscribeUser(creditCardToken);
+        // Handle any errors from your server
+        if (error) {
+            alert(error)
+        } else {
+
+            let pament_data = await charges();
+            console.log('pament_data', pament_data);
+            if (pament_data.status == 'succeeded') {
+                alert("Payment Successfully");
+            }
+            else {
+                alert('Payment failed');
+            }
+        }
+    };
+
+
+
+    const charges = async () => {
+
+        const card = {
+            'amount': 50,
+            'currency': CURRENCY,
+            'source': CARD_TOKEN,
+            'description': "Developers in Subscription"
+        };
+
+        return fetch('https://api.stripe.com/v1/charges', {
+            headers: {
+                // Use the correct MIME type for your server
+                Accept: 'application/json',
+                // Use the correct Content Type to send data to Stripe
+                'Content-Type': 'application/x-www-form-urlencoded',
+                // Use the Stripe publishable key as Bearer
+                Authorization: `Bearer ${Secret_key}`
+            },
+            // Use a proper HTTP method
+            method: 'post',
+            // Format the credit card data to a string of key-value pairs
+            // divided by &
+            body: Object.keys(card)
+                .map(key => key + '=' + card[key])
+                .join('&')
+        }).then(response => response.json());
+    };
+
+
+
+    const _onChange = (data) => {
+        setCardInput(data)
+    }
+
+    return (
+        <View style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#2471A3" />
+            <Image
+                source={{ uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Stripe_logo%2C_revised_2016.png/1200px-Stripe_logo%2C_revised_2016.png' }}
+                style={styles.ImgStyle}
+            />
+            <CreditCardInput
+                inputContainerStyle={styles.inputContainerStyle}
+                inputStyle={styles.inputStyle}
+                labelStyle={styles.labelStyle}
+                validColor="#fff"
+                placeholderColor="#ccc"
+                onChange={_onChange} />
+
+            <TouchableOpacity
+                onPress={onSubmit}
+                style={styles.button}>
+                <Text
+                    style={styles.buttonText}>
+                    Pay Now
+                </Text>
+            </TouchableOpacity>
+        </View>
+    );
+};
+
+// define your styles
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+
+    },
+    ImgStyle: {
+        width: '100%',
+        height: 200,
+        resizeMode: 'contain',
+        borderRadius: 8,
+    },
+    button: {
+        backgroundColor: '#2471A3',
+        width: 150,
+        height: 45,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        borderRadius: 5
+    },
+    buttonText: {
+        fontSize: 15,
+        color: '#f4f4f4',
+        fontWeight: 'bold',
+        textTransform: 'uppercase'
+    },
+    inputContainerStyle: {
+        backgroundColor: '#fff',
+        borderRadius: 5
+    },
+    inputStyle: {
+        backgroundColor: '#222242',
+        paddingLeft: 15,
+        borderRadius: 5,
+        color: '#fff'
+    },
+    labelStyle: {
+        marginBottom: 5,
+        fontSize: 12
+    }
+
 });
 
-const TPL_CREDIT_CARD = 'views/orders/components/payments/cc.tpl';
-const TPL_EMPTY = 'views/orders/components/payments/empty.tpl';
-const TPL_CHECK = 'views/orders/components/payments/check.tpl';
-const TPL_PHONE = 'views/orders/components/payments/phone.tpl';
-const SUPPORTED_PAYMENT_TPLS = [
-  TPL_CREDIT_CARD,
-  TPL_EMPTY,
-  TPL_CHECK,
-  TPL_PHONE,
-];
-
-const SCRIPT_YOOKASSA = 'yandex_checkout.php';
-const SCRIPT_YOOKASSA_FOR_MARKETPLACES = 'yandex_checkout_for_marketplaces.php';
-const SCRIPT_YOOKASSA_LEGACY = 'yandex_money.php';
-const SCRIPT_PAYPAL_EXPRESS = 'paypal_express.php';
-const SUPPORTED_PAYMENT_SCRIPTS = [
-  SCRIPT_YOOKASSA,
-  SCRIPT_YOOKASSA_FOR_MARKETPLACES,
-  SCRIPT_YOOKASSA_LEGACY,
-  SCRIPT_PAYPAL_EXPRESS,
-];
-
-/**
- * Checkout. Payment screen.
- *
- * @reactProps {object} cart - Cart information.
- * @reactProps {object} cartActions - Cart actions.
- * @reactProps {object} paymentsActions - Payments actions.
- * @reactProps {object} ordersActions - Orders actions.
- * @reactProps {string} shipping_id - Shipping id.
- */
-export class CheckoutPayment extends Component {
-  static propTypes = {
-    cart: PropTypes.shape({
-      items: PropTypes.arrayOf(PropTypes.object),
-      fetching: PropTypes.bool,
-    }),
-    paymentsActions: PropTypes.shape({
-      settlements: PropTypes.func,
-    }),
-    ordersActions: PropTypes.shape({
-      create: PropTypes.func,
-    }),
-    shipping_id: PropTypes.string,
-    cartActions: PropTypes.shape({}),
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      fetching: false,
-      selectedItem: null,
-      items: [],
-    };
-  }
-
-  /**
-   * Defines the available payment methods.
-   */
-  componentDidMount() {
-    const { cart } = this.props;
-    const items = Object.keys(cart.payments)
-      .map((k) => cart.payments[k])
-      .filter(
-        (p) =>
-          SUPPORTED_PAYMENT_TPLS.includes(p.template) ||
-          SUPPORTED_PAYMENT_SCRIPTS.includes(p.script),
-      );
-    // FIXME: Default selected payment method.
-    const selectedItem = items[0];
-
-    this.setState({
-      items,
-      selectedItem,
-    });
-  }
-
-  /**
-   * Place order button.
-   */
-  handlePlaceOrder() {
-    const { selectedItem } = this.state;
-    if (!selectedItem) {
-      return null;
-    }
-
-    if (SUPPORTED_PAYMENT_SCRIPTS.includes(selectedItem.script)) {
-      return this.placeSettlements();
-    }
-
-    return this.placeOrderAndComplete();
-  }
-
-  /**
-   * Redirects to CheckoutComplete.
-   */
-  placeOrderAndComplete() {
-    const {
-      cart,
-      ordersActions,
-      cartActions,
-      storeCart,
-      convertedShippingIds,
-    } = this.props;
-
-    const values = this.paymentFormRef.getValue();
-
-    if (!values) {
-      return null;
-    }
-
-    this.setState({
-      fetching: true,
-    });
-
-    const orderInfo = {
-      products: {},
-      coupon_codes: Object.keys(cart.coupons),
-      shipping_id: cart?.isShippingRequired ? convertedShippingIds : 0,
-      payment_id: this.state.selectedItem.payment_id,
-      user_data: cart.user_data,
-      ...values,
-    };
-    Object.keys(cart.products).map((key) => {
-      const p = cart.products[key];
-      orderInfo.products[p.product_id] = {
-        product_id: p.product_id,
-        amount: p.amount,
-        product_options: p.product_options,
-      };
-      return orderInfo;
-    });
-
-    if (values.phone) {
-      orderInfo.payment_info = {
-        ...orderInfo.payment_info,
-        customer_phone: values.phone,
-      };
-    } else if (values.cardNumber) {
-      orderInfo.payment_info = {
-        ...orderInfo.payment_info,
-        card_number: values.cardNumber,
-        expiry_month: values.expiryMonth,
-        expiry_year: values.expiryYear,
-        cardholder_name: values.cardholderName,
-        cvv2: values.ccv,
-      };
-    }
-
-    ordersActions
-      .create(orderInfo)
-      .then(({ data }) => {
-        this.setState({
-          fetching: false,
-        });
-        if (!data) {
-          return;
-        }
-        cartActions.clear(cart, storeCart.coupons);
-        nav.pushCheckoutComplete(this.props.componentId, {
-          orderId: data.order_id,
-        });
-      })
-      .catch(() => {
-        this.setState({
-          fetching: false,
-        });
-      });
-    return null;
-  }
-
-  /**
-   * Redirects to SettlementsCompleteWebView.
-   */
-  placeSettlements() {
-    const { cart, shipping_id, ordersActions, paymentsActions } = this.props;
-
-    const orderInfo = {
-      products: {},
-      coupon_codes: cart.coupons,
-      shipping_id,
-      payment_id: this.state.selectedItem.payment_id,
-      user_data: cart.user_data,
-    };
-    Object.keys(cart.products).map((key) => {
-      const p = cart.products[key];
-      orderInfo.products[p.product_id] = {
-        product_id: p.product_id,
-        amount: p.amount,
-      };
-      return orderInfo;
-    });
-
-    this.setState({
-      fetching: true,
-    });
-
-    ordersActions
-      .create(orderInfo)
-      .then(({ data }) => {
-        this.setState({
-          fetching: false,
-        });
-
-        if (!data) {
-          return;
-        }
-
-        const settlementData = {
-          order_id: data.order_id,
-          replay: false,
-        };
-        paymentsActions.settlements(settlementData).then((response) => {
-          nav.pushSettlementsCompleteWebView(this.props.componentId, {
-            title: this.state.selectedItem.payment,
-            orderId: data.order_id,
-            cart,
-            ...response.data.data,
-          });
-        });
-      })
-      .catch(() => {
-        this.setState({
-          fetching: false,
-        });
-      });
-    return null;
-  }
-
-  /**
-   * Renders payment methods.
-   *
-   * @param {object} item - Payment method information.
-   *
-   * @return {JSX.Element}
-   */
-  renderItem = (item) => {
-    const { payment } = this.state.selectedItem;
-    // FIXME compare by name.
-    const isSelected = item.payment === payment;
-    return (
-      <TouchableOpacity
-        style={styles.paymentItem}
-        onPress={() => {
-          this.setState(
-            {
-              selectedItem: item,
-            },
-            () => {
-              this.listView.scrollToOffset({ x: 0, y: 0, animated: true });
-            },
-          );
-        }}>
-        {isSelected ? (
-          <Icon name="radio-button-checked" style={styles.checkIcon} />
-        ) : (
-          <Icon name="radio-button-unchecked" style={styles.uncheckIcon} />
-        )}
-        <Text style={styles.paymentItemText}>{stripTags(item.payment)}</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  /**
-   * Renders header.
-   *
-   * @return {JSX.Element}
-   */
-  renderHeader = () => {
-    const { currentStep } = this.props;
-    return (
-      <View style={styles.stepsWrapper}>
-        <StepByStepSwitcher currentStep={currentStep} />
-      </View>
-    );
-  };
-
-  /**
-   * Renders form fields.
-   *
-   * @return {JSX.Element}
-   */
-  renderFooter() {
-    const { cart } = this.props;
-    const { selectedItem } = this.state;
-    if (!selectedItem) {
-      return null;
-    }
-    let form = null;
-    // FIXME: HARDCODE
-    switch (selectedItem.template) {
-      case TPL_EMPTY:
-        form = (
-          <PaymentEmpty
-            onInit={(ref) => {
-              this.paymentFormRef = ref;
-            }}
-          />
-        );
-        break;
-      case TPL_CREDIT_CARD:
-        form = (
-          <PaymentCreditCardForm
-            onInit={(ref) => {
-              this.paymentFormRef = ref;
-            }}
-          />
-        );
-        break;
-      case TPL_CHECK:
-        form = (
-          <PaymentCheckForm
-            onInit={(ref) => {
-              this.paymentFormRef = ref;
-            }}
-          />
-        );
-        break;
-      case TPL_PHONE:
-        form = (
-          <PaymentPhoneForm
-            onInit={(ref) => {
-              this.paymentFormRef = ref;
-            }}
-            value={{ phone: cart.user_data.b_phone }}
-          />
-        );
-        break;
-
-      default:
-        break;
-    }
-
-    switch (selectedItem.script) {
-      case SCRIPT_PAYPAL_EXPRESS:
-        form = (
-          <PaymentPaypalForm
-            onInit={(ref) => {
-              this.paymentFormRef = ref;
-            }}
-          />
-        );
-        break;
-      case SCRIPT_YOOKASSA:
-      case SCRIPT_YOOKASSA_FOR_MARKETPLACES:
-      case SCRIPT_YOOKASSA_LEGACY:
-        form = (
-          <PaymentYandexKassaForm
-            onInit={(ref) => {
-              this.paymentFormRef = ref;
-            }}
-          />
-        );
-        break;
-
-      default:
-        break;
-    }
-
-    return (
-      <View style={styles.paymentItemWrapper}>
-        <FormBlock title={selectedItem.payment}>
-          {form}
-          <Text style={styles.paymentItemDesc}>
-            {stripTags(selectedItem.instructions)}
-          </Text>
-        </FormBlock>
-      </View>
-    );
-  }
-
-  /**
-   * Renders spinner.
-   *
-   * @return {JSX.Element}
-   */
-  renderSpinner = () => {
-    const { fetching } = this.state;
-    return <Spinner visible={fetching} mode="modal" />;
-  };
-
-  /**
-   * Renders component
-   *
-   * @return {JSX.Element}
-   */
-  render() {
-    const { cart } = this.props;
-
-    return (
-      <SafeAreaView style={styles.container}>
-        <KeyboardAwareScrollView>
-          <FlatList
-            ref={(ref) => {
-              this.listView = ref;
-            }}
-            contentContainerStyle={styles.contentContainer}
-            ListHeaderComponent={() => this.renderHeader()}
-            ListFooterComponent={() => this.renderFooter()}
-            data={this.state.items}
-            keyExtractor={(item, index) => `${index}`}
-            numColumns={1}
-            renderItem={({ item, index }) => this.renderItem(item, index)}
-          />
-        </KeyboardAwareScrollView>
-        <CartFooter
-          totalPrice={formatPrice(cart.total_formatted.price)}
-          btnText={i18n.t('Place order').toUpperCase()}
-          isBtnDisabled={false}
-          onBtnPress={() => this.handlePlaceOrder()}
-        />
-        {this.renderSpinner()}
-      </SafeAreaView>
-    );
-  }
-}
-
-export default connect(
-  (state) => ({
-    auth: state.auth,
-    storeCart: state.cart,
-  }),
-  (dispatch) => ({
-    ordersActions: bindActionCreators(ordersActions, dispatch),
-    cartActions: bindActionCreators(cartActions, dispatch),
-    paymentsActions: bindActionCreators(paymentsActions, dispatch),
-  }),
-)(CheckoutPayment);
+//make this component available to the app
+export default StripeGateway;

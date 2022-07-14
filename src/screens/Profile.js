@@ -27,7 +27,7 @@ const styles = EStyleSheet.create({
   },
   logo: {
     resizeMode: 'contain',
-    width: '100%',
+    width: '97%',
     height: 110,
 
   },
@@ -201,7 +201,7 @@ export class ProfileEdit extends Component {
    * @return {JSX.Element}
    */
   renderSettings(settings) {
-    return (
+   /* return (
       <>
         <View style={styles.signInSectionContainer}>
           <Text style={styles.signInSectionText}>
@@ -233,7 +233,7 @@ export class ProfileEdit extends Component {
           </View>
         </TouchableOpacity>
       </>
-    );
+    );*/
   }
 
   /**
@@ -318,11 +318,16 @@ export class ProfileEdit extends Component {
   renderSignedIn = (auth, cart) => {
     return (
       <>
-        <View>
-          {theme.$logoUrl !== '' && (
-            <Image source={{ uri: theme.$logoUrl }} style={styles.logo} />
-          )}
-        </View>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Image
+          style={{width: 300,height:100}}
+          source={{
+            uri:
+              "https://bingekart.com/images/logos/9/Final_Logo_bingekart-02__1_.png"
+          }}
+          resizeMode="contain"
+        />
+      </View>
         {!auth.logged ? (
           <View style={styles.signInButtons}>
             <TouchableOpacity

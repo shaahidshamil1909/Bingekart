@@ -31,7 +31,8 @@ const styles = EStyleSheet.create({
     color: '$categoriesHeaderColor',
     textAlign: I18nManager.isRTL ? 'right' : 'left',
   },
-  dotsSwiper: {},
+    dotsSwiper: {
+    },
 });
 
 /**
@@ -50,7 +51,7 @@ export default class BannerBlocks extends Component {
     name: PropTypes.string,
     wrapper: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.object),
-    onPress: PropTypes.func,
+    //onPress: PropTypes.func,
   };
 
   /**
@@ -69,10 +70,10 @@ export default class BannerBlocks extends Component {
   renderImage = (slide, index) => {
     const { item } = slide;
     const imageUri = get(item, 'main_pair.icon.image_path');
-    const { onPress } = this.props;
+   // const { onPress } = this.props;
 
     return (
-      <TouchableOpacity key={index} onPress={() => onPress(item)}>
+      <TouchableOpacity key={index}>
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.img} />
         ) : (

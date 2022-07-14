@@ -18,6 +18,7 @@ import store from '../store';
 import i18n from '../utils/i18n';
 import { NativeModules, Platform, I18nManager } from 'react-native';
 
+
 const covertLangCodes = (translations = []) => {
   const result = {};
 
