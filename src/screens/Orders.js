@@ -82,8 +82,10 @@ export class Orders extends Component {
             item={item}
             onPress={() => {
               nav.pushOrderDetail(this.props.componentId, {
-                orderId: item.order_id,
+                  orderId: item.order_id,
+               
               });
+                
             }}
           />
         )}

@@ -225,4 +225,3 @@ export async function initApp() {
 
   i18n.changeLanguage(currentLanguage.langCode);
 }
-

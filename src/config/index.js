@@ -1,10 +1,10 @@
 export default {
   // API KEY
-    apiKey: '1f1dd742625fd53980d592437aa7b4ca', //'8Wcw13VSwM7E03x59X4w2V667Lp67R8Q', //62f5a9c133da276c516cc7f491f8a644
+  apiKey: '1f1dd742625fd53980d592437aa7b4ca', //'8Wcw13VSwM7E03x59X4w2V667Lp67R8Q', //62f5a9c133da276c516cc7f491f8a644
   // API URL
-    baseUrl: 'http://bingekart.com/api/4.0/', //'https://mobile.mve.demo.cs-cart.com/api/4.0/',http://bingekart.com/cscart/api/4.0/
+  baseUrl: 'http://stg.bingekart.com/api/4.0/', //'https://mobile.mve.demo.cs-cart.com/api/4.0/',http://bingekart.com/cscart/api/4.0/
   // SITE URL
-    siteUrl: 'http://bingekart.com/',
+  siteUrl: 'http://stg.bingekart.com/',
   // SHOP NAME
   shopName: 'Bingekart',
   // VERSION MVE OR ULT

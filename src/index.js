@@ -21,6 +21,7 @@ function Start() {
     Navigation.events().registerAppLaunchedListener(async () => {
         await initApp();
         await prepareIcons();
+        //await requestLocationPermission()
         const state = store.getState();
 
         if (state.settings.isShopClosed) {

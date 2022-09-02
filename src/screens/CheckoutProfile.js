@@ -164,6 +164,7 @@ export class CheckoutProfile extends Component {
       );
     }
 
+      var gotamount = ""
     const filteredFields = this.filterProfileFormFields(cart, fields);
 
     return (

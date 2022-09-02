@@ -88,8 +88,10 @@ export class CheckoutComplete extends Component {
    * @ignore
    */
   static propTypes = {
-    orderId: PropTypes.number,
+      orderId: PropTypes.number,
+   
   };
+
 
   constructor(props) {
     super(props);
@@ -107,7 +109,9 @@ export class CheckoutComplete extends Component {
    * Sets title. Loads icons. Gets order data.
    */
   componentWillMount() {
-    const { orderId } = this.props;
+      const { orderId } = this.props;
+      console.log("orderidvalue", orderId)
+
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         title: {

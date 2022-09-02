@@ -96,7 +96,7 @@ export default class CategoriesBlocks extends Component {
             return null;
         }
 
-        const itemsList = orderBy(items, (i) => parseInt(i.position, 10), [
+        const itemsList = orderBy(items, (i) => parseInt(i.position, 3), [
             'asc',
         ]).map((item, index) => (
             <CategorySideMenuListView

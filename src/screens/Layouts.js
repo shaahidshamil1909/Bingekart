@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { ScrollView, RefreshControl, TouchableHighlight, Image, TouchableOpacity, Text, View } from 'react-native';
+import { ScrollView, RefreshControl, TouchableHighlight, Image, TouchableOpacity, Text, View, PermissionsAndroid, NavigatorIOS } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import EStyleSheet from 'react-native-extended-stylesheet';
+import EStyleSheet, { value } from 'react-native-extended-stylesheet';
 import get from 'lodash/get';
 import { AppRegistry } from 'react-native'
 import styles from './styles';
@@ -46,6 +46,53 @@ import config from '../config';
 import * as nav from '../services/navigation';
 import { iconsMap } from '../utils/navIcons';
 import i18n from '../utils/i18n';
+import { size } from 'lodash';
+
+//import React, {useState, useEffect} from 'react';
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
+import Geolocation from '@react-native-community/geolocation';
+import Geocoder from 'react-native-geocoding';
+
+const apiKey = "AIzaSyB1HvUvKrVcLRZ2PGNiThWYdvap3S9szzk";
+
+let address = "";
+
+
+let area = "";
+
+let city = "";
+
+
+ 
+
+const navstyles = EStyleSheet.create({
+  navBar: {
+    height: 54,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 0,
+      shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  leftContainer: {
+    justifyContent: 'flex-start',   
+    marginLeft:10,
+    flexDirection: 'row'
+  },
+  middleContainer: {
+      flex: 2,
+      flexDirection: 'row',
+      justifyContent:'center',
+      marginLeft: 10,
+      marginRight:10
+    }
+
+ 
+});
+
 
 // Styles
 const style = EStyleSheet.create({
@@ -226,8 +273,113 @@ export class Layouts extends Component {
    */
     async componentDidMount() {
 
+      // const granted = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      //   {
+      //     title: 'Location Access Required',
+      //     message: 'This App needs to Access your location',
+      //   },
+      // );
+
+      // if(granted === PermissionsAndroid.RESULTS.GRANTED){
+
+
+        LocationServicesDialogBox.checkLocationServicesIsEnabled({
+          message: "<h2>Allow 'Bingekart' to access your device's location?",
+          ok: "Allow",
+          cancel: "Deny",
+          enableHighAccuracy: true, 
+          showDialog: true, 
+          openLocationServices: true, 
+          preventOutSideTouch: false, 
+          preventBackClick: false, 
+          providerListener: true 
+      }).then(function(success) {
+          // success => {alreadyEnabled: true, enabled: true, status: "enabled"} 
+         Geolocation.getCurrentPosition((position) => {
+                  let initialPosition = JSON.stringify(position);
+                  //this.setState({ initialPosition });
+
+                 //navigator.geolocation.getCurrentPosition(position =>{
+                console.log("check Geolocation output => ", position)
+                this.setState({ initialPosition,
+              
+           
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                })
+                Geocoder.init(apiKey);
+                Geocoder.from(position.coords.latitude, position.coords.longitude)
+                .then(json => {
+                    console.log("checking Geocoder json data => ", json)
+                    json.results[7].address_components.forEach((value, index) => {
+                        this.setState({
+                            address: json.results[7].formatted_address,
+                            tempAddress: json.results[7].formatted_address
+                        })
+                        address = json.results[4].formatted_address
+
+                        var value = address.split(",");
+
+                        count = value.length;
+                        country = value[count-1];
+                        state = value[count-2];
+                        city = value[count-3];
+                        area = value[count-4];
+                        console.log("Current Address", address)
+                        console.log("area name: ", area)
+                        console.log("City name: ", city)
+                        console.log("State name: ", state)
+                        console.log("Country name: ", country)
+
+
+                     
+                  })
+                })
+            //  })
+                  
+              }, error => console.log(error), { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 });
+          }.bind(this)
+      ).catch((error) => {
+          console.log(error.message);
+      });
+      
+      // DeviceEventEmitter.addListener('locationProviderStatusChange', function(status) 
+      // { 
+
+      //     console.log(status); 
+      // });
+
+
+
+
+      // Geolocation.getCurrentPosition(info =>{
+      //   console.log("check Geolocation output => ", info)
+      //   this.setState({
+      //     lat: info.coords.latitude,
+      //     lng: info.coords.longitude,
+      //     latitudeDelta: 0.0922,
+      //     longitudeDelta: 0.0421,
+      //   })
+      //   Geocoder.init(apiKey);
+      //   Geocoder.from(info.coords.latitude, info.coords.longitude)
+      //   .then(json => {
+      //     console.log("checking Geocoder json data => ", json)
+      //     json.results[0].address_components.forEach((value, index) => {
+      //       this.setState({address: json.results[0].formatted_address,
+      //       tempAddress: json.results[0].formatted_address})
+      //       address = json.results[0].formatted_address
+      //       console.log("Current Address", address)
+             
+      //     })
+      //   })
+      // })
+    
+
+      //requestLocationPermission();
+
     const { layoutsActions, componentId } = this.props;
-    // Listener for home button. Returns to home screen.
+    //Listener for home button. Returns to home screen.
     this.backToHomeScreenHandler =
       Navigation.events().registerBottomTabSelectedListener(
         ({ selectedTabIndex, unselectedTabIndex }) => {
@@ -237,14 +389,19 @@ export class Layouts extends Component {
         },
       );
     Navigation.mergeOptions(this.props.componentId, {
+
+    
+      
+        
+        
+    
       
       topBar: {
-            title: {
-                 text: config.shopName.toUpperCase(),
-                fontWeight: 'bold',
-                fontSize: '1.3rem',
+            // icon: {
+            //   icon: require("./../assets/logo_bingekart.png"),
+            //   justifyContent:'center'
 
-            },
+            // },
             leftButtons: [
                 {
                     id: 'sidemenu',
@@ -282,7 +439,7 @@ export class Layouts extends Component {
     topNavigationButtonPressed(buttonId) {
         if (buttonId === 'sidemenu') {
             
-                    this.setState({ drawerOpen: true });
+        this.setState({ drawerOpen: true });
                 
        
         }
@@ -323,6 +480,9 @@ export class Layouts extends Component {
    * Removes event listeners for notifications.
    */
   componentWillUnmount() {
+
+    //LocationServicesDialogBox.stopListener();
+
     if (config.pushNotifications && this.pushNotificationListener) {
       this.pushNotificationListener();
     }
@@ -629,43 +789,103 @@ export class Layouts extends Component {
     }
 
     renderMainContent = () => {
-        const { layouts } = this.props;
-        const blocksList = layouts.blocks.map((block, index) =>
-            this.renderBlock(block, index),
-        );
+      const { layouts } = this.props;
+      const blocksList = layouts.blocks.map((block, index) =>
+          this.renderBlock(block, index),
+      );
 
-        if (layouts.fetching) {
-            return <Spinner visible />;
-        }
+      if (layouts.fetching) {
+          return <Spinner visible />;
+      }
 
-        if (!this.state.drawerOpen) {
-            return (
-                <ScrollView
-                    style={style.container}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.refreshing}
-                            onRefresh={() => this.onRefresh()}
-                        />
-                    }>
-                    {blocksList}
-                </ScrollView>
-            )
-        } else {
-            return (
-                <Text style={styles.drawerOpen}>
-                </Text>
-            )
-        }
-    }
+      if (!this.state.drawerOpen) {
+          return (
 
+              <ScrollView
+                  style={style.container}
+                  refreshControl={
+                      <RefreshControl
+                          refreshing={this.state.refreshing}
+                          onRefresh={() => this.onRefresh()}
+                      />
+                  }>
+                      <View style={navstyles.navBar}>
+                        <View style={navstyles.middleContainer}>
+                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                                <Image
+                                    style={{ width: 210, height: 90 }}
+                                    source={{
+                                        uri:
+                                            "https://bingekart.com/images/logos/9/Final_Logo_bingekart-02__1_.png"
+                                    }}
+                                    resizeMode="contain"
+                                />
+                            </View>
+                        </View>
+                    </View>
+                    <View style={navstyles.navBar}>
+                        <View style={navstyles.leftContainer}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Image source={require('./../assets/placeholder.png')}
+                                    style={{
+                                        marginTop: 10,
+                                        marginLeft: 10
+                                    }} />
+
+                            </View>
+                        </View>
+                          
+                          <View style={{ flexDirection: 'row'}}>
+                          <Text style={{ marginTop: 5, marginRight: 150, marginBottom: 5 }}>{area + "," + city}</Text>
+               </View>
+                     </View>
+                  {blocksList}
+              </ScrollView>
+
+          )
+      } else {
+          return (
+              <Text style={styles.drawerOpen}>
+              </Text>
+          )
+      }
+  }
     render() {
 
-       
-        //return <PushyHorizontalMenu />
+     
+      //     return (
 
-        return (         
-            <Drawer
+      //   <View style={navstyles.navBar}>
+      //   <View style={navstyles.leftContainer}>
+         
+      //   <Image source={require('./../assets/hamburger.png')}  />
+      //   </View>
+        
+        
+      //    <Text
+      //       style={{
+      //         justifyContent: 'center',
+      //         alignItems: 'center',
+      //         marginTop: 16,
+      //       }}>
+      //       Longitude: {address}
+      //     </Text>
+      //     <Text
+      //       style={{
+      //         justifyContent: 'center',
+      //         alignItems: 'center',
+      //         marginTop: 16,
+      //       }}>
+      //       Latitude: {currentLatitude}
+      //     </Text>
+      //    </View>                
+        
+        
+        
+      // );
+
+                return (  
+                   <Drawer
                 open={this.state.drawerOpen}
                 content={this.renderSideMenuContent()}
                 type="overlay"
@@ -682,16 +902,19 @@ export class Layouts extends Component {
                 acceptPan={false}>
                 <View style={styles.container}>
                     
-                        {this.renderMainContent()}
+                  {this.renderMainContent()}
                    
                 </View>
             </Drawer>
-        );
+
+          );
     }
   
 }
 
 export default connect(
+
+  
   (state) => ({
     notifications: state.notifications,
         layouts: state.layouts,
@@ -709,4 +932,6 @@ export default connect(
       pagesActions: bindActionCreators(pagesActions, dispatch),
       settingsActions: bindActionCreators(settingsActions, dispatch),
   }),
+
+  
 )(Layouts);

@@ -1,14 +1,17 @@
 {
   "ExpandedNodes": [
     "",
+    "\\android",
+    "\\android\\app",
     "\\src",
+    "\\src\\actions",
+    "\\src\\assets",
     "\\src\\components",
-    "\\src\\components\\form",
     "\\src\\config",
+    "\\src\\constants",
     "\\src\\screens",
-    "\\src\\screens\\drawers",
     "\\src\\services"
   ],
-  "SelectedNode": "\\src\\screens\\ProductDetail.js",
+  "SelectedNode": "\\src\\screens\\Layouts.js",
   "PreviewInSolutionExplorer": false
 }
