@@ -312,12 +312,12 @@ export class Layouts extends Component {
                 Geocoder.from(position.coords.latitude, position.coords.longitude)
                 .then(json => {
                     console.log("checking Geocoder json data => ", json)
-                    json.results[7].address_components.forEach((value, index) => {
+                    json.results[6].address_components.forEach((value, index) => {
                         this.setState({
-                            address: json.results[7].formatted_address,
-                            tempAddress: json.results[7].formatted_address
+                            address: json.results[6].formatted_address,
+                            tempAddress: json.results[6].formatted_address
                         })
-                        address = json.results[4].formatted_address
+                        address = json.results[5].formatted_address
 
                         var value = address.split(",");
 

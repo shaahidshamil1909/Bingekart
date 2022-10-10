@@ -100,7 +100,9 @@ export default class BannerBlocks extends Component {
           items={items}
           renderItem={this.renderImage}
           carouselContainerHeight={250}
-        />
+            />
+             
+
       </View>
     );
   }

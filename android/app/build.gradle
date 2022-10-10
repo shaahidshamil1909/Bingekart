@@ -142,10 +142,17 @@ android {
         applicationId "com.cscart.bingekart"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "1.6"
+        versionCode 9
+        versionName "1.8"
         multiDexEnabled true
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+
     splits {
         abi {
             reset()

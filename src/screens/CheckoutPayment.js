@@ -599,7 +599,7 @@ export class CheckoutPayment extends Component {
                         headers: { 
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            'Authorization': 'Basic Z3VydUBrN2NvbXB1dGluZy5jb206ZzVpT3hZMXhVaE1LczUxMTEwYTg3NTM5NlZET1ZVcnM='
+                            'Authorization': 'Basic Z3VydUBrN2NvbXB1dGluZy5jb206NGQ2UVc5SzdONjNpMkU4NzdDWDJLTENHUHlQNEo0MDA='
                          },
                         body: JSON.stringify({
                             

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView, Dimensions } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import orderBy from 'lodash/orderBy';
 
 import CategoryListView from './CategoryListView';
 import i18n from '../utils/i18n';
+import { PRODUCT_NUM_COLUMNS } from '../utils';
+
 
 const styles = EStyleSheet.create({
   container: {
@@ -64,11 +66,19 @@ export default class CategoriesBlocks extends Component {
    * @returns {JSX.Element}
    */
   render() {
-    const { items, wrapper, onPress } = this.props;
+      const { items, wrapper, onPress } = this.props;
+      const { width } = Dimensions.get('window');
+      const itemWidth = (width / 100) * Math.floor(94 / PRODUCT_NUM_COLUMNS + 5);
 
     if (!items.length) {
       return null;
     }
+
+      let contentContainerStyleWidthIndex = items.length
+      if (contentContainerStyleWidthIndex === 1) {
+          contentContainerStyleWidthIndex *= PRODUCT_NUM_COLUMNS
+      }
+
 
     const itemsList = orderBy(items, (i) => parseInt(i.position, 10), [
       'asc',
@@ -85,7 +95,23 @@ export default class CategoriesBlocks extends Component {
         {wrapper !== '' && (
           <Text style={styles.header}>{i18n.t('Product Catalog')}</Text>
         )}
-        <View style={styles.wrapper}>{itemsList}</View>
+
+            <ScrollView
+                contentContainerStyle={{
+                    width: (itemWidth + 1000),
+                }}
+                showsHorizontalScrollIndicator={false}
+                horizontal>
+                {orderBy(items, (i) => parseInt(i.position, 10), [
+                    'asc',
+                ]).map((item, index) => (
+                     <CategoryListView
+                        category={item}
+                           onPress={() => onPress(item)}
+                               key={index}
+                        /> 
+                ))}
+            </ScrollView>
       </View>
     );
   }

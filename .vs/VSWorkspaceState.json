@@ -4,14 +4,13 @@
     "\\android",
     "\\android\\app",
     "\\src",
-    "\\src\\actions",
-    "\\src\\assets",
     "\\src\\components",
     "\\src\\config",
     "\\src\\constants",
     "\\src\\screens",
-    "\\src\\services"
+    "\\src\\services",
+    "\\src\\utils"
   ],
-  "SelectedNode": "\\src\\screens\\Layouts.js",
+  "SelectedNode": "\\src\\screens\\Search.js",
   "PreviewInSolutionExplorer": false
 }

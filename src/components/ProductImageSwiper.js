@@ -4,7 +4,8 @@ import { TouchableOpacity, Image } from 'react-native';
 import * as nav from '../services/navigation';
 import { AppCarousel } from './AppCarousel';
 import { SCREEN_WIDTH } from '../constants';
-import theme from '../config/theme'
+import theme from '../config/theme';
+import PropTypes from 'prop-types';
 
 const NUMBER_HORIZONTAL_SCREEN_SIDES = 2
 

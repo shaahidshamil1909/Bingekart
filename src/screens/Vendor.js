@@ -213,7 +213,9 @@ export class Vendor extends Component {
           logoUrl={vendor.logo_url}
           productsCount={vendor.products_count}
         />
-        <CategoryBlock
+            <CategoryBlock
+                name={vendorCategories.name}
+                wrapper={vendorCategories.wrapper}
           items={vendorCategories.items}
           onPress={(category) => {
             nav.pushCategory(this.props.componentId, {

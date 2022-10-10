@@ -33,10 +33,10 @@ const styles = EStyleSheet.create({
     backgroundColor: '$screenBackgroundColor',
   },
   topSearch: {
-      backgroundColor: '#ea5920',
+    backgroundColor: '#ea5920',
     height: Platform.OS === 'ios' ? 80 : 60,
     padding: 14,
-    paddingTop: Platform.OS === 'ios' ? 30 : 12,
+    paddingTop: Platform.OS === 'ios' ? 30 : 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
@@ -54,13 +54,15 @@ const styles = EStyleSheet.create({
       textAlign: I18nManager.isRTL ? 'right' : 'left',
  
   },
-  inputAndroid: {
+    inputAndroid: {
+        backgroundColor: '#EBEBEB',
+        borderRadius: 8,
     height: 44,
     paddingLeft: 10,
-    paddingRight: 10,
+        paddingRight: 10,
     flex: 2,
       textAlign: I18nManager.isRTL ? 'right' : 'left',
-        color: '#FFF',
+        color: '#000000',
   },
   content: {
     flex: 1,
