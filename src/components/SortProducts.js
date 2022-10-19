@@ -77,11 +77,11 @@ const styles = EStyleSheet.create({
     },
     btnFilter: {
         justifyContent: 'center',
-        paddingLeft: 6,
-        paddingRight: 6,
-        paddingTop: 6,
+        paddingLeft: 3,
+        paddingRight: 3,
+        paddingTop: 5,
         paddingBottom: 6,
-        marginRight: 20,
+        marginRight: 1,
     },
     text: {
         color: '$buttonWithoutBackgroundTextColor',

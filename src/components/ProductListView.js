@@ -101,6 +101,19 @@ class ProductListView extends PureComponent {
     onPress: PropTypes.func,
   };
 
+
+   constructor(props) {
+        super(props);
+        this.activeCategoryId = 0;
+        this.isFirstLoad = true;
+
+        this.state = {
+          
+            refreshing: false,
+         
+        };
+    }
+
   /**
    * Renders discount.
    *
@@ -199,6 +212,15 @@ class ProductListView extends PureComponent {
     );
   };
 
+    handleRefresh() {
+        this.setState(
+            {
+                refreshing: true,
+            },
+            
+        );
+    }
+
   /**
    * Renders component
    *
@@ -210,7 +232,7 @@ class ProductListView extends PureComponent {
     const imageUri = getImagePath(item);
 
     return (
-      <TouchableOpacity style={styles.container} onPress={() => onPress(item)}>
+        <TouchableOpacity style={styles.container} onPress={() => onPress(item)}>
         <View>
           {imageUri !== null && (
             <Image
@@ -229,7 +251,8 @@ class ProductListView extends PureComponent {
           {this.renderRating()}
           {this.renderPrice()}
         </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+
     );
   }
 }

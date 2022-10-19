@@ -41,8 +41,12 @@ import Categories, { encryptbase } from "../screens/Categories"
 import { selectedMin, selectedMax } from '../components/SortProducts';
 import { filter } from 'lodash';
 
+// var image_url = "";
 
-export function fetchDiscussion(companyId, id, params = { companyId, page: 1 }, type = 'P') {
+// export { image_url }
+
+
+export function fetchDiscussion(id, params = { page: 1 }, type = 'P') {
     return (dispatch) => {
         dispatch({
             type: FETCH_DISCUSSION_REQUEST,
@@ -211,15 +215,21 @@ export function recalculatePrice(pid, options) {
 }
 
 export function fetch(pid) {
+
     return async (dispatch) => {
         dispatch({
             type: FETCH_ONE_PRODUCT_REQUEST,
+
         });
 
         try {
             const response = await Api.get(`/sra_products/${pid}`);
             const product = convertProduct(response.data);
-           
+            console.log("ProductRes:", response.data)
+            //console.log("Image_url::",response.data.main_pair.icon.https_image_path)
+            // image_url = response.data.main_pair.icon.https_image_path
+            //console.log("Image_url::::",image_url)
+
 
             if (product.rating) {
                 await fetchDiscussion(pid)(dispatch);
@@ -333,11 +343,12 @@ export function fetchByCategory(
 
             .then((response) => {
                 console.log("category_output", response.data)
-
+                //console.log("image_url:",response.data.main_pair.icon.https_image_path)
                 dispatch({
                     type: FETCH_PRODUCTS_SUCCESS,
                     payload: response.data,
                 });
+                console.log("image_url:", response.data.main_pair.icon.https_image_path)
             })
             .catch((error) => {
                 dispatch({

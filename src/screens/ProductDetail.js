@@ -10,7 +10,7 @@ import i18n from '../utils/i18n';
 import { isEmpty } from 'lodash';
 import config from '../config';
 import theme from '../config/theme';
-import { formatPrice, isPriceIncludesTax, stripTags } from '../utils';
+import { formatPrice, isPriceIncludesTax, getImagePath, stripTags } from '../utils';
 import {
     VERSION_MVE,
     OPTION_TYPE_CHECKBOX,
@@ -25,6 +25,7 @@ import {
     Text,
     TouchableOpacity,
     Platform,
+    Image,
     Share,
 } from 'react-native';
 
@@ -430,12 +431,33 @@ export const ProductDetail = ({
      * @return {JSX.Element}
      */
     const renderImage = () => {
-        return (
-            <View>
-                <ProductImageSwiper>{product.images}</ProductImageSwiper>
-                {renderDiscountLabel()}
-            </View>
-        );
+
+        if (product.main_pair.icon == null) {
+
+            return (
+
+                <View>
+                    <ProductImageSwiper>{product.images}</ProductImageSwiper>
+                    {renderDiscountLabel()}
+                </View>
+
+            );
+
+        } else {
+
+            product.images.push(product.main_pair.icon.https_image_path);
+            const withoutDuplicates = [...new Set(product.images)];
+            // console.log("ImageArray",Testimage)
+
+            return (
+
+                <View>
+                    <ProductImageSwiper>{withoutDuplicates}</ProductImageSwiper>
+                    {renderDiscountLabel()}
+                </View>
+
+            );
+        }
     };
 
     /**

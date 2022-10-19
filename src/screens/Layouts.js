@@ -20,11 +20,11 @@ import theme from '../config/theme';
 
 // Constants
 import {
-  BLOCK_BANNERS,
-  BLOCK_CATEGORIES,
-  BLOCK_PRODUCTS,
-  BLOCK_PAGES,
-  BLOCK_VENDORS,
+    BLOCK_BANNERS,
+    BLOCK_CATEGORIES,
+    BLOCK_PRODUCTS,
+    BLOCK_PAGES,
+    BLOCK_VENDORS,
 } from '../constants';
 
 // Import actions.
@@ -57,40 +57,39 @@ const apiKey = "AIzaSyB1HvUvKrVcLRZ2PGNiThWYdvap3S9szzk";
 
 let address = "";
 
-
 let area = "";
 
 let city = "";
 
 
- 
+
 
 const navstyles = EStyleSheet.create({
-  navBar: {
-    height: 54,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottomWidth: 0,
-      shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  leftContainer: {
-    justifyContent: 'flex-start',   
-    marginLeft:10,
-    flexDirection: 'row'
-  },
-  middleContainer: {
-      flex: 2,
-      flexDirection: 'row',
-      justifyContent:'center',
-      marginLeft: 10,
-      marginRight:10
+    navBar: {
+        height: 54,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottomWidth: 0,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 4,
+        elevation: 1,
+    },
+    leftContainer: {
+        justifyContent: 'flex-start',
+        marginLeft: 10,
+        flexDirection: 'row'
+    },
+    middleContainer: {
+        flex: 2,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginLeft: 10,
+        marginRight: 10
     }
 
- 
+
 });
 
 
@@ -227,210 +226,210 @@ const categorystyles = EStyleSheet.create({
 export class Layouts extends Component {
 
 
-  /**
-   * @ignore
-   */
-  static propTypes = {
-    layoutsActions: PropTypes.shape({
-      fetch: PropTypes.func,
-    }),
-    notifications: PropTypes.shape({
-      items: PropTypes.arrayOf(PropTypes.object),
-    }),
-    notificationsActions: PropTypes.shape({
-      hide: PropTypes.func,
-    }),
-      layouts: PropTypes.shape({}),
-      authActions: PropTypes.shape({
-          registration: PropTypes.func,
-      }),
+    /**
+     * @ignore
+     */
+    static propTypes = {
+        layoutsActions: PropTypes.shape({
+            fetch: PropTypes.func,
+        }),
+        notifications: PropTypes.shape({
+            items: PropTypes.arrayOf(PropTypes.object),
+        }),
+        notificationsActions: PropTypes.shape({
+            hide: PropTypes.func,
+        }),
+        layouts: PropTypes.shape({}),
+        authActions: PropTypes.shape({
+            registration: PropTypes.func,
+        }),
 
-  };
-
-  constructor(props) {
-    super(props);
-    console.disableYellowBox = true;
-    this.isFetchBlocksSend = false;
-    this.pushNotificationListener = null;
-    this.pushNotificationOpenListener = null;
-    this.backToHomeScreenHandler = null;
-      this.state = { drawerOpen: null };
-    this.state = {
-      refreshing: false,
     };
-      Navigation.events().registerNavigationButtonPressedListener(
-          ({ buttonId }) => {
-              this.topNavigationButtonPressed(buttonId);
-          },
-      );
 
-  }
+    constructor(props) {
+        super(props);
+        console.disableYellowBox = true;
+        this.isFetchBlocksSend = false;
+        this.pushNotificationListener = null;
+        this.pushNotificationOpenListener = null;
+        this.backToHomeScreenHandler = null;
+        this.state = { drawerOpen: null };
+        this.state = {
+            refreshing: false,
+        };
+        Navigation.events().registerNavigationButtonPressedListener(
+            ({ buttonId }) => {
+                this.topNavigationButtonPressed(buttonId);
+            },
+        );
 
-  /**
-   * Sets titles. Gets layouts. Registers 2 event listeners for notifications.
-   * 1. Shows notifications if they came.
-   * 2. Listens to click on notification.
-   */
+    }
+
+    /**
+     * Sets titles. Gets layouts. Registers 2 event listeners for notifications.
+     * 1. Shows notifications if they came.
+     * 2. Listens to click on notification.
+     */
     async componentDidMount() {
 
-      // const granted = await PermissionsAndroid.request(
-      //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      //   {
-      //     title: 'Location Access Required',
-      //     message: 'This App needs to Access your location',
-      //   },
-      // );
+        // const granted = await PermissionsAndroid.request(
+        //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        //   {
+        //     title: 'Location Access Required',
+        //     message: 'This App needs to Access your location',
+        //   },
+        // );
 
-      // if(granted === PermissionsAndroid.RESULTS.GRANTED){
+        // if(granted === PermissionsAndroid.RESULTS.GRANTED){
 
 
         LocationServicesDialogBox.checkLocationServicesIsEnabled({
-          message: "<h2>Allow 'Bingekart' to access your device's location?",
-          ok: "Allow",
-          cancel: "Deny",
-          enableHighAccuracy: true, 
-          showDialog: true, 
-          openLocationServices: true, 
-          preventOutSideTouch: false, 
-          preventBackClick: false, 
-          providerListener: true 
-      }).then(function(success) {
-          // success => {alreadyEnabled: true, enabled: true, status: "enabled"} 
-         Geolocation.getCurrentPosition((position) => {
-                  let initialPosition = JSON.stringify(position);
-                  //this.setState({ initialPosition });
+            message: "<h2>Allow 'Bingekart' to access your device's location?",
+            ok: "Allow",
+            cancel: "Deny",
+            enableHighAccuracy: true,
+            showDialog: true,
+            openLocationServices: true,
+            preventOutSideTouch: false,
+            preventBackClick: false,
+            providerListener: true
+        }).then(function (success) {
+            // success => {alreadyEnabled: true, enabled: true, status: "enabled"} 
+            Geolocation.getCurrentPosition((position) => {
+                let initialPosition = JSON.stringify(position);
+                //this.setState({ initialPosition });
 
-                 //navigator.geolocation.getCurrentPosition(position =>{
+                //navigator.geolocation.getCurrentPosition(position =>{
                 console.log("check Geolocation output => ", position)
-                this.setState({ initialPosition,
-              
-           
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
+                this.setState({
+                    initialPosition,
+
+
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
                 })
                 Geocoder.init(apiKey);
                 Geocoder.from(position.coords.latitude, position.coords.longitude)
-                .then(json => {
-                    console.log("checking Geocoder json data => ", json)
-                    json.results[6].address_components.forEach((value, index) => {
-                        this.setState({
-                            address: json.results[6].formatted_address,
-                            tempAddress: json.results[6].formatted_address
+                    .then(json => {
+                        console.log("checking Geocoder json data => ", json)
+                        json.results[6].address_components.forEach((value, index) => {
+                            this.setState({
+                                address: json.results[6].formatted_address,
+                                tempAddress: json.results[6].formatted_address
+                            })
+                            address = json.results[5].formatted_address
+
+                            var value = address.split(",");
+
+                            count = value.length;
+                            country = value[count - 1];
+                            state = value[count - 2];
+                            city = value[count - 3];
+                            area = value[count - 4];
+                            console.log("Current Address", address)
+                            console.log("area name: ", area)
+                            console.log("City name: ", city)
+                            console.log("State name: ", state)
+                            console.log("Country name: ", country)
+
+
                         })
-                        address = json.results[5].formatted_address
+                    })
+                //  })
 
-                        var value = address.split(",");
+            }, error => console.log(error), { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 });
+        }.bind(this)
+        ).catch((error) => {
+            console.log(error.message);
+        });
 
-                        count = value.length;
-                        country = value[count-1];
-                        state = value[count-2];
-                        city = value[count-3];
-                        area = value[count-4];
-                        console.log("Current Address", address)
-                        console.log("area name: ", area)
-                        console.log("City name: ", city)
-                        console.log("State name: ", state)
-                        console.log("Country name: ", country)
+        // DeviceEventEmitter.addListener('locationProviderStatusChange', function(status) 
+        // { 
 
-
-                     
-                  })
-                })
-            //  })
-                  
-              }, error => console.log(error), { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 });
-          }.bind(this)
-      ).catch((error) => {
-          console.log(error.message);
-      });
-      
-      // DeviceEventEmitter.addListener('locationProviderStatusChange', function(status) 
-      // { 
-
-      //     console.log(status); 
-      // });
+        //     console.log(status); 
+        // });
 
 
 
 
-      // Geolocation.getCurrentPosition(info =>{
-      //   console.log("check Geolocation output => ", info)
-      //   this.setState({
-      //     lat: info.coords.latitude,
-      //     lng: info.coords.longitude,
-      //     latitudeDelta: 0.0922,
-      //     longitudeDelta: 0.0421,
-      //   })
-      //   Geocoder.init(apiKey);
-      //   Geocoder.from(info.coords.latitude, info.coords.longitude)
-      //   .then(json => {
-      //     console.log("checking Geocoder json data => ", json)
-      //     json.results[0].address_components.forEach((value, index) => {
-      //       this.setState({address: json.results[0].formatted_address,
-      //       tempAddress: json.results[0].formatted_address})
-      //       address = json.results[0].formatted_address
-      //       console.log("Current Address", address)
-             
-      //     })
-      //   })
-      // })
-    
+        // Geolocation.getCurrentPosition(info =>{
+        //   console.log("check Geolocation output => ", info)
+        //   this.setState({
+        //     lat: info.coords.latitude,
+        //     lng: info.coords.longitude,
+        //     latitudeDelta: 0.0922,
+        //     longitudeDelta: 0.0421,
+        //   })
+        //   Geocoder.init(apiKey);
+        //   Geocoder.from(info.coords.latitude, info.coords.longitude)
+        //   .then(json => {
+        //     console.log("checking Geocoder json data => ", json)
+        //     json.results[0].address_components.forEach((value, index) => {
+        //       this.setState({address: json.results[0].formatted_address,
+        //       tempAddress: json.results[0].formatted_address})
+        //       address = json.results[0].formatted_address
+        //       console.log("Current Address", address)
 
-      //requestLocationPermission();
+        //     })
+        //   })
+        // })
 
-    const { layoutsActions, componentId } = this.props;
-    //Listener for home button. Returns to home screen.
-    this.backToHomeScreenHandler =
-      Navigation.events().registerBottomTabSelectedListener(
-        ({ selectedTabIndex, unselectedTabIndex }) => {
-          if (selectedTabIndex === 0 && unselectedTabIndex === 0) {  
-            Navigation.popToRoot(componentId);
-          }
-        },
-      );
-    Navigation.mergeOptions(this.props.componentId, {
 
-    
-      
-        
-        
-    
-      
-      topBar: {
-            // icon: {
-            //   icon: require("./../assets/logo_bingekart.png"),
-            //   justifyContent:'center'
+        //requestLocationPermission();
 
-            // },
-            leftButtons: [
-                {
-                    id: 'sidemenu',
-                    icon: iconsMap.menu,
-                   // icon: require("./../assets/logo_bingekart.png")
-
+        const { layoutsActions, componentId } = this.props;
+        //Listener for home button. Returns to home screen.
+        this.backToHomeScreenHandler =
+            Navigation.events().registerBottomTabSelectedListener(
+                ({ selectedTabIndex, unselectedTabIndex }) => {
+                    if (selectedTabIndex === 0 && unselectedTabIndex === 0) {
+                        Navigation.popToRoot(componentId);
+                    }
                 },
-            ],
+            );
+        Navigation.mergeOptions(this.props.componentId, {
 
 
-          //rightButtons: [
-           //   {
-            //      id: 'clearWishList',
-            //      icon: iconsMap.person,
-            //  },
-          //],
-      },
-    });
 
-    layoutsActions.fetch();
 
-    if (config.pushNotifications) {
-      const permissionGranted = await PushNotificaitons.Init(componentId);
-      if (permissionGranted) {
-        this.pushNotificationListener = PushNotificaitons.RegisterPushListener(
-          componentId,
-        );
-      }
-    }
+
+
+
+            topBar: {
+                // icon: {
+                //   icon: require("./../assets/logo_bingekart.png"),
+                //   justifyContent:'center'
+
+                // },
+                leftButtons: [
+                    {
+                        id: 'sidemenu',
+                        icon: iconsMap.menu,
+                        // icon: require("./../assets/logo_bingekart.png")
+
+                    },
+                ],
+
+
+                //rightButtons: [
+                //   {
+                //      id: 'clearWishList',
+                //      icon: iconsMap.person,
+                //  },
+                //],
+            },
+        });
+
+        layoutsActions.fetch();
+
+        if (config.pushNotifications) {
+            const permissionGranted = await PushNotificaitons.Init(componentId);
+            if (permissionGranted) {
+                this.pushNotificationListener = PushNotificaitons.RegisterPushListener(
+                    componentId,
+                );
+            }
+        }
     }
 
 
@@ -438,164 +437,164 @@ export class Layouts extends Component {
 
     topNavigationButtonPressed(buttonId) {
         if (buttonId === 'sidemenu') {
-            
-        this.setState({ drawerOpen: true });
-                
-       
+
+            this.setState({ drawerOpen: true });
+
+
         }
     }
 
-  /**
-   * Shows and hides notifications.
-   */
-  componentWillReceiveProps(nextProps) {
-    const { notificationsActions } = this.props;
+    /**
+     * Shows and hides notifications.
+     */
+    componentWillReceiveProps(nextProps) {
+        const { notificationsActions } = this.props;
 
-    if (nextProps.notifications.items.length) {
-      const notify =
-        nextProps.notifications.items[nextProps.notifications.items.length - 1];
-      Navigation.showOverlay({
-        component: {
-          name: 'Notification',
-          passProps: {
-            title: notify.title,
-            type: notify.type,
-            text: notify.text,
-          },
-          options: {
-            layout: {
-              componentBackgroundColor: 'transparent',
-            },
-            overlay: {
-              interceptTouchOutside: false,
-            },
-          },
-        },
-      });
-      notificationsActions.hide(notify.id);
-    }
-  }
-
-  /**
-   * Removes event listeners for notifications.
-   */
-  componentWillUnmount() {
-
-    //LocationServicesDialogBox.stopListener();
-
-    if (config.pushNotifications && this.pushNotificationListener) {
-      this.pushNotificationListener();
-    }
-    this.backToHomeScreenHandler.remove();
-  }
-
-  /**
-   * Renders layout.
-   *
-   * @param {object} block - Layout information.
-   * @param {number} index - Layout index.
-   *
-   * @return {JSX.Element}
-   */
-   
-
-
-
-  renderBlock = (block, index) => {
-    if (!get(block, 'content.items')) {
-      return null;
+        if (nextProps.notifications.items.length) {
+            const notify =
+                nextProps.notifications.items[nextProps.notifications.items.length - 1];
+            Navigation.showOverlay({
+                component: {
+                    name: 'Notification',
+                    passProps: {
+                        title: notify.title,
+                        type: notify.type,
+                        text: notify.text,
+                    },
+                    options: {
+                        layout: {
+                            componentBackgroundColor: 'transparent',
+                        },
+                        overlay: {
+                            interceptTouchOutside: false,
+                        },
+                    },
+                },
+            });
+            notificationsActions.hide(notify.id);
+        }
     }
 
-    const items = toArray(block.content.items);
-    switch (block.type) {
-      case BLOCK_BANNERS:
-        return (
-          <BannerBlock
-            name={block.name}
-            wrapper={block.wrapper}
-            items={items}
-          />
-        );
+    /**
+     * Removes event listeners for notifications.
+     */
+    componentWillUnmount() {
 
-      case BLOCK_PRODUCTS:
-        return (
-          <ProductBlock
-            name={block.name}
-            wrapper={block.wrapper}
-            items={items}
-            onPress={(product) => {
-              nav.pushProductDetail(this.props.componentId, {
-                pid: product.product_id,
-              });
-            }}
-            key={index}
-          />
-        );
+        //LocationServicesDialogBox.stopListener();
 
-      case BLOCK_CATEGORIES:
-        return (
-          <CategoryBlock
-            name={block.name}
-            wrapper={block.wrapper}
-            items={items}
-            onPress={(category) => {
-              nav.pushCategory(this.props.componentId, { category });
-            }}
-            key={index}
-          />
-        );
-
-      case BLOCK_PAGES:
-        return (
-          <PageBlock
-            name={block.name}
-            wrapper={block.wrapper}
-            items={items}
-            onPress={(page) => {
-              nav.showPage(this.props.componentId, {
-                uri: `${config.siteUrl}index.php?dispatch=pages.view&page_id=${page.page_id}`,
-                title: page.page,
-              });
-            }}
-            key={index}
-          />
-        );
-
-      case BLOCK_VENDORS:
-        return (
-          <VendorBlock
-            name={block.name}
-            wrapper={block.wrapper}
-            items={items}
-            onPress={(vendor) => {
-              nav.showModalVendor({
-                companyId: vendor.company_id,
-                company: vendor.company,
-              });
-            }}
-            key={index}
-          />
-        );
-
-      default:
-        return null;
+        if (config.pushNotifications && this.pushNotificationListener) {
+            this.pushNotificationListener();
+        }
+        this.backToHomeScreenHandler.remove();
     }
-  };
 
-  onRefresh() {
-    const { layoutsActions } = this.props;
-    this.setState({ refreshing: true });
-    setTimeout(() => {
-      this.setState({ refreshing: false });
-      layoutsActions.fetch(undefined, true);
-    }, 1000);
-  }
+    /**
+     * Renders layout.
+     *
+     * @param {object} block - Layout information.
+     * @param {number} index - Layout index.
+     *
+     * @return {JSX.Element}
+     */
 
-  /**
-   * Renders component
-   *
-   * @return {JSX.Element}
-   */
+
+
+
+    renderBlock = (block, index) => {
+        if (!get(block, 'content.items')) {
+            return null;
+        }
+
+        const items = toArray(block.content.items);
+        switch (block.type) {
+            case BLOCK_BANNERS:
+                return (
+                    <BannerBlock
+                        name={block.name}
+                        wrapper={block.wrapper}
+                        items={items}
+                    />
+                );
+
+            case BLOCK_PRODUCTS:
+                return (
+                    <ProductBlock
+                        name={block.name}
+                        wrapper={block.wrapper}
+                        items={items}
+                        onPress={(product) => {
+                            nav.pushProductDetail(this.props.componentId, {
+                                pid: product.product_id,
+                            });
+                        }}
+                        key={index}
+                    />
+                );
+
+            case BLOCK_CATEGORIES:
+                return (
+                    <CategoryBlock
+                        name={block.name}
+                        wrapper={block.wrapper}
+                        items={items}
+                        onPress={(category) => {
+                            nav.pushCategory(this.props.componentId, { category });
+                        }}
+                        key={index}
+                    />
+                );
+
+            case BLOCK_PAGES:
+                return (
+                    <PageBlock
+                        name={block.name}
+                        wrapper={block.wrapper}
+                        items={items}
+                        onPress={(page) => {
+                            nav.showPage(this.props.componentId, {
+                                uri: `${config.siteUrl}index.php?dispatch=pages.view&page_id=${page.page_id}`,
+                                title: page.page,
+                            });
+                        }}
+                        key={index}
+                    />
+                );
+
+            case BLOCK_VENDORS:
+                return (
+                    <VendorBlock
+                        name={block.name}
+                        wrapper={block.wrapper}
+                        items={items}
+                        onPress={(vendor) => {
+                            nav.showModalVendor({
+                                companyId: vendor.company_id,
+                                company: vendor.company,
+                            });
+                        }}
+                        key={index}
+                    />
+                );
+
+            default:
+                return null;
+        }
+    };
+
+    onRefresh() {
+        const { layoutsActions } = this.props;
+        this.setState({ refreshing: true });
+        setTimeout(() => {
+            this.setState({ refreshing: false });
+            layoutsActions.fetch(undefined, true);
+        }, 1000);
+    }
+
+    /**
+     * Renders component
+     *
+     * @return {JSX.Element}
+     */
 
     rendercategoryBlock = (block, index) => {
         if (!get(block, 'content.items')) {
@@ -776,40 +775,41 @@ export class Layouts extends Component {
         }
         const { profile, pages, auth, cart, settings } = this.props;
         return (
-         /*   <ScrollView style={style.container}>
-
-                {settings.languageCurrencyFeatureFlag && this.renderSettings(settings)}
-
-                {auth.logged && this.renderSignedInMenu()}
-
-                {this.renderPages(pages)}
-            </ScrollView>*/
-             renderblocksList
+            /*   <ScrollView style={style.container}>
+   
+                   {settings.languageCurrencyFeatureFlag && this.renderSettings(settings)}
+   
+                   {auth.logged && this.renderSignedInMenu()}
+   
+                   {this.renderPages(pages)}
+               </ScrollView>*/
+            renderblocksList
         )
     }
 
     renderMainContent = () => {
-      const { layouts } = this.props;
-      const blocksList = layouts.blocks.map((block, index) =>
-          this.renderBlock(block, index),
-      );
+        const { layouts } = this.props;
+        const blocksList = layouts.blocks.map((block, index) =>
+            this.renderBlock(block, index),
+        );
 
-      if (layouts.fetching) {
-          return <Spinner visible />;
-      }
+        if (layouts.fetching) {
+            return <Spinner visible />;
+        }
 
-      if (!this.state.drawerOpen) {
-          return (
+        if (!this.state.drawerOpen) {
+            return (
 
-              <ScrollView
-                  style={style.container}
-                  refreshControl={
-                      <RefreshControl
-                          refreshing={this.state.refreshing}
-                          onRefresh={() => this.onRefresh()}
-                      />
-                  }>
-                      <View style={navstyles.navBar}>
+                <ScrollView
+                    style={style.container}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={() => this.onRefresh()}
+                        />
+                    }>
+
+                    <View style={navstyles.navBar}>
                         <View style={navstyles.middleContainer}>
                             <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                                 <Image
@@ -834,58 +834,61 @@ export class Layouts extends Component {
 
                             </View>
                         </View>
-                          
-                          <View style={{ flexDirection: 'row'}}>
-                          <Text style={{ marginTop: 5, marginRight: 150, marginBottom: 5 }}>{area + "," + city}</Text>
-               </View>
-                     </View>
-                  {blocksList}
-              </ScrollView>
 
-          )
-      } else {
-          return (
-              <Text style={styles.drawerOpen}>
-              </Text>
-          )
-      }
-  }
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{ marginTop: 5, marginRight: 200, marginBottom: 5 }}>{area + "," + city}</Text>
+                        </View>
+                    </View>
+                    {blocksList}
+                </ScrollView>
+
+            )
+        } else {
+            return (
+                <Text style={styles.drawerOpen}>
+                </Text>
+            )
+        }
+    }
     render() {
 
-     
-      //     return (
 
-      //   <View style={navstyles.navBar}>
-      //   <View style={navstyles.leftContainer}>
-         
-      //   <Image source={require('./../assets/hamburger.png')}  />
-      //   </View>
-        
-        
-      //    <Text
-      //       style={{
-      //         justifyContent: 'center',
-      //         alignItems: 'center',
-      //         marginTop: 16,
-      //       }}>
-      //       Longitude: {address}
-      //     </Text>
-      //     <Text
-      //       style={{
-      //         justifyContent: 'center',
-      //         alignItems: 'center',
-      //         marginTop: 16,
-      //       }}>
-      //       Latitude: {currentLatitude}
-      //     </Text>
-      //    </View>                
-        
-        
-        
-      // );
+        //     return (
 
-                return (  
-                   <Drawer
+        //   <View style={navstyles.navBar}>
+        //   <View style={navstyles.leftContainer}>
+
+        //   <Image source={require('./../assets/hamburger.png')}  />
+        //   </View>
+
+
+        //    <Text
+        //       style={{
+        //         justifyContent: 'center',
+        //         alignItems: 'center',
+        //         marginTop: 16,
+        //       }}>
+        //       Longitude: {address}
+        //     </Text>
+        //     <Text
+        //       style={{
+        //         justifyContent: 'center',
+        //         alignItems: 'center',
+        //         marginTop: 16,
+        //       }}>
+        //       Latitude: {currentLatitude}
+        //     </Text>
+        //    </View>                
+
+
+
+        // );
+
+        return (
+
+
+
+            <Drawer
                 open={this.state.drawerOpen}
                 content={this.renderSideMenuContent()}
                 type="overlay"
@@ -901,22 +904,22 @@ export class Layouts extends Component {
                 captureGestures="open"
                 acceptPan={false}>
                 <View style={styles.container}>
-                    
-                  {this.renderMainContent()}
-                   
+
+                    {this.renderMainContent()}
+
                 </View>
             </Drawer>
 
-          );
+        );
     }
-  
+
 }
 
 export default connect(
 
-  
-  (state) => ({
-    notifications: state.notifications,
+
+    (state) => ({
+        notifications: state.notifications,
         layouts: state.layouts,
         auth: state.auth,
         pages: state.pages,
@@ -924,14 +927,14 @@ export default connect(
         profile: state.profile,
         settings: state.settings,
 
-  }),
-  (dispatch) => ({
-    layoutsActions: bindActionCreators(layoutsActions, dispatch),
-      notificationsActions: bindActionCreators(notificationsActions, dispatch),
-      authActions: bindActionCreators(authActions, dispatch),
-      pagesActions: bindActionCreators(pagesActions, dispatch),
-      settingsActions: bindActionCreators(settingsActions, dispatch),
-  }),
+    }),
+    (dispatch) => ({
+        layoutsActions: bindActionCreators(layoutsActions, dispatch),
+        notificationsActions: bindActionCreators(notificationsActions, dispatch),
+        authActions: bindActionCreators(authActions, dispatch),
+        pagesActions: bindActionCreators(pagesActions, dispatch),
+        settingsActions: bindActionCreators(settingsActions, dispatch),
+    }),
 
-  
+
 )(Layouts);

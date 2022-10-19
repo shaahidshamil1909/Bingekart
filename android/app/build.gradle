@@ -142,8 +142,8 @@ android {
         applicationId "com.cscart.bingekart"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "1.8"
+        versionCode 10
+        versionName "1.9"
         multiDexEnabled true
     }
 

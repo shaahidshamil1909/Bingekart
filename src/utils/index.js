@@ -68,7 +68,7 @@ export const getImagePath = (data, size = '500x500') => {
     return get(data, 'main_pair.icon.image_path');
   }
 
-  return null;
+  return get(data, 'main_pair.icon.image_path');
 };
 
 export const getProductImagesPaths = (data = {}, size = '1000x1000') => {
